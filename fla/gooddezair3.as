@@ -24,6 +24,8 @@ package
 	
 	import display.DezaisoUIKit;
 	
+	import item.ItemNode;
+	
 	public class gooddezair3 extends Sprite
 	{
 		private const DUMMY_MAX_WIDTH:Number = 200;
@@ -118,7 +120,7 @@ package
 		
 		
 		/**
-		 * 
+		 * fontのロード完了
 		 * @param e
 		 * 
 		 */		
@@ -132,8 +134,56 @@ package
 			var font:Font = new FontClass();
 			_fontname = font.fontName;
 			creatingTextField();
-			loadcsv();	
+			
+			
+			// 作品データ取得
+			loadCsv();	
 		}
+		
+		
+		/**
+		 * ダジャレのデータを取得開始
+		 * 
+		 */		
+		private function loadCsv():void
+		{
+			// ハードコードいくないね
+			_csvloader = new URLLoader( new URLRequest( './data/result2012.csv')  );
+			_csvloader.addEventListener( Event.COMPLETE, onCompleteLoadCsv );
+		}
+		
+		
+		
+		/**
+		 * ダジャレのデータを取得完了
+		 * @param e
+		 * 
+		 */		
+		private function onCompleteLoadCsv(e:Event):void
+		{
+			_csvloader.removeEventListener( Event.COMPLETE, onCompleteLoadCsv );
+			var list:Array = String(_csvloader.data).split("\n");
+			
+			objList = new Vector.<ItemNode>();
+			for(var i:int=0; i<list.length; i+=1){
+				var n:ItemNode = new ItemNode(list[i]);
+				objList.push( n );
+			}
+			
+			var settingLoader:URLLoader = new URLLoader();
+			settingLoader.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void{
+				appStart();
+			});
+			
+			settingLoader.addEventListener( Event.COMPLETE, function(e:Event):void{
+				var settingXML:XML = XML(settingLoader.data);
+				
+				appStart(settingXML);
+			});
+			//	設定ファイル取得
+			settingLoader.load(  new URLRequest("./data/settings.xml") );
+		}
+		
 		
 		
 		private function creatingTextField():void
@@ -173,49 +223,7 @@ package
 		}
 		
 		
-		/**
-		 * 
-		 * 
-		 */		
-		private function loadcsv():void
-		{
-			_csvloader = new URLLoader( new URLRequest( './data/result2012.csv')  );
-			_csvloader.addEventListener( Event.COMPLETE, onCompleteLoadCsv );
-		}
 		
-		
-		/**
-		 * 
-		 * @param e
-		 * 
-		 */		
-		private function onCompleteLoadCsv(e:Event):void
-		{
-			_csvloader.removeEventListener( Event.COMPLETE, onCompleteLoadCsv );
-			var list:Array = String(_csvloader.data).split("\n");
-			
-			objList = new Vector.<ItemNode>();
-			for(var i:int=0; i<list.length; i+=1){
-				var n:ItemNode = new ItemNode(list[i]);
-				objList.push( n );
-			}
-			
-			var settingLoader:URLLoader = new URLLoader();
-			settingLoader.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void{
-				appStart();
-			});
-			
-			settingLoader.addEventListener( Event.COMPLETE, function(e:Event):void{
-				var settingXML:XML = XML(settingLoader.data);
-				
-				appStart(settingXML);
-			});
-			
-			settingLoader.load(  new URLRequest("./data/settings.xml") );
-			
-			
-			
-		}
 		
 		private var APP_SETTINGS:XML;
 		
@@ -228,56 +236,32 @@ package
 		private function appStart(settings:XML=null):void{
 			
 			APP_SETTINGS = settings;
-			
-			
-			
 			_slideTimer = new Timer(15000);
 			_slideTimer.start();
 			_slideTimer.addEventListener( TimerEvent.TIMER, showTextAsTimerEvent );
 			
 			ui = new DezaisoUIKit(this);
-			
-			/*
-			var so:SharedObject = SharedObject.getLocal("goodDezaiso");
-			if(so.data.rectangle_x){
-			var rect:Rectangle = new Rectangle(
-			so.data.rectangle_x,
-			so.data.rectangle_y,
-			so.data.rectangle_width,
-			so.data.rectangle_height
-			);
-			ui.viewAreaRectangle.setViewAreaRectangle( rect );
-			_viewAreaRectangle = rect;				
-			}
-			*/
 			showJimaku(0);
-			
 			addChild( ui );
-			
 			if(settings){
 				if(settings.transparent=="1"){
 					ui.transparentSlider.value = Number(settings.transparent);	
 					ui.onChangeTransparent(null);
 				}
-				
 				if(settings.showui && String(settings.showui) == "0"){
 					ui.doClose(null);
 					Mouse.hide();
 					
 				}
-				
 				if(settings.interval){
 					ui.intervalSlider.value = Number(settings.interval);
 					ui.onChangeInterval(null);
 				}
-				
 				if(settings.fullscreen=="1"){
 					stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
 				}
-				
 				return;
 			}
-			
 		}
 		
 		
@@ -375,7 +359,6 @@ package
 			
 			d_wrapper.x = int((stage.stageWidth-d_wrapper.width)/2);
 			d_wrapper.y = int((stage.stageHeight-(d_textfield.textHeight*percent))/2);
-			//d_wrapper.y += _viewAreaRectangle.height*0.5  - (d_textfield.textHeight*percent) * 0.5;
 			
 			var date:Date = new Date(n.datestr);
 			var current:Number = new Date().time;
@@ -400,27 +383,6 @@ package
 		 * @param rectangle
 		 * 
 		 */		
-		/*
-		public function setViewArea(rectangle:Rectangle):void{
-		_viewAreaRectangle = rectangle;
-		showJimaku( _currentTargetNumber );
-		
-		//　アプリの設定ファイルの表示領域の項目を更新する
-		var so:SharedObject = SharedObject.getLocal("goodDezaiso");
-		so.objectEncoding = ObjectEncoding.AMF3;
-		so.data.rectangle_x = rectangle.x;
-		so.data.rectangle_y = rectangle.y;
-		so.data.rectangle_width = rectangle.width;
-		so.data.rectangle_height = rectangle.height;
-		
-		
-		so.flush();
-		}
-		*/
-		
-		
-		
-		
 		public function playJimaku():void
 		{
 			if(_slideTimer.running){
@@ -482,44 +444,5 @@ package
 			_currentBlankTime = n;
 		}
 		
-	}
-}
-
-internal class ItemNode{
-	
-	private var _level:String = "";
-	
-	public function get level():String
-	{
-		return _level;
-	}
-	
-	private var _text:String = "";
-	
-	public function get text():String
-	{
-		return _text;
-	}
-	
-	private var _id:String = "";
-	
-	public function get id():String
-	{
-		return _id;
-	}
-	
-	private var _datestr:String = "";
-	
-	public function get datestr():String
-	{
-		return _datestr;
-	}
-	
-	public function ItemNode(str:String){
-		var arr:Array = str.split(',');
-		_level = arr[0];
-		_text = arr[1];
-		_id = arr[2];
-		_datestr = arr[3];
 	}
 }

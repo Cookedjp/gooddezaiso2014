@@ -58,8 +58,6 @@ package display
 			skipTargetTextInput.width = 160;
 			skipButton = new PushButton(this, 200, 80, "SKIP", onSkip );
 			skipButton.width = 40;
-			
-//			colorPannel = new ColorPicker();
 			colorPannel = new ColorChooser()
 			this.addChild( colorPannel );
 			colorPannel.x = 300;
@@ -100,8 +98,6 @@ package display
 			d_jimaku.addEventListener("JIMAKU_COUNT_UP", onCountUp );
 			
 			randomText = new CheckBox(this, 100, 60, "RANDOM", doRandom );
-			
-		//	doClose(null);
 		}
 		
 		private function onCountUp(e:Event):void
@@ -195,15 +191,6 @@ package display
 			d_jimaku.random = randomText.selected;
 		}
 		
-		
-		/**
-		 * 表示領域の矩形が更新された時に発行されるイベント
-		 * d_jimakuのサイズを表示領域に合わせて調整かける 
-		 * 
-		 */		
-		//private function updateViewArea(e:Event = null　):void{
-		//	d_jimaku.setViewArea( viewAreaRectangle.getViewAreaRectangle() );
-		//}
 		
 	}
 }
