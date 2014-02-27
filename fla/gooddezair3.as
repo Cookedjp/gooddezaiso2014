@@ -26,6 +26,11 @@ package
 	
 	import item.ItemNode;
 	
+	import model.ConfigModel;
+	
+	import org.libspark.thread.EnterFrameThreadExecutor;
+	import org.libspark.thread.Thread;
+	
 	public class gooddezair3 extends Sprite
 	{
 		private const DUMMY_MAX_WIDTH:Number = 200;
@@ -35,28 +40,24 @@ package
 		private var d_wrapper: Sprite;
 		private var _currentTargetNumber: int = 0;
 		
+		
+		
 		public function get currentTargetNumber():int
 		{
 			return _currentTargetNumber;
 		}
 		
-		private var objList:Vector.<ItemNode>;
 		private var _slideTimer:Timer = null;
-		private var _csvloader:URLLoader;
-		
-		private var _fontLoader:Loader;
-		private var _fontname:String = "";
-		
 		private var _viewAreaRectangle:Rectangle;
-		
-		public function get jimakuLength():int{
-			return objList.length;
-		}
 		
 		private var ui:DezaisoUIKit;
 		
 		private var _random:Boolean;
-		
+
+		public function get jimakuLength():int{
+			return configModel.csvObjList.length;
+		}
+
 		public function get random():Boolean
 		{
 			return _random;
@@ -102,94 +103,36 @@ package
 			win.height = screenHeight;
 			win.x = (screenWidth - win.width) / 2;
 			win.y = (screenHeight - win.height) / 2;
-			loadfont();	
-		}
-		
-		
-		/**
-		 * 
-		 * 
-		 */		
-		private function loadfont():void
-		{
-			trace('loadfont');
-			_fontLoader = new Loader();
-			_fontLoader.load( new URLRequest("data/fonts/font2.swf") );
-			_fontLoader.contentLoaderInfo.addEventListener( Event.COMPLETE, fontCompleteHandler );
-		}
-		
-		
-		/**
-		 * fontのロード完了
-		 * @param e
-		 * 
-		 */		
-		private function fontCompleteHandler(e:Event):void
-		{
-			trace('fontCompleteHandler');
-			_fontLoader.contentLoaderInfo.removeEventListener( Event.COMPLETE, fontCompleteHandler );
-			var FontClass:Class = _fontLoader.contentLoaderInfo.applicationDomain.getDefinition("Hiragino") as Class;
-			Font.registerFont( FontClass );
 			
-			var font:Font = new FontClass();
-			_fontname = font.fontName;
+			Thread.initialize( new EnterFrameThreadExecutor() );
+			configModel = new ConfigModel();
+			configModel.start();
+			configModel.dispacher.addEventListener(Event.COMPLETE, startContent);
+		}
+		
+		var configModel:ConfigModel;
+		
+		/**
+		 * コンフィグを読み込みおわったらコンテンツを開始 
+		 * @return 
+		 * 
+		 */		
+		private function startContent(e:Event){
+			trace("COMPLETE LOADING")
 			creatingTextField();
 			
-			
-			// 作品データ取得
-			loadCsv();	
+			appStart(configModel.settingXML);
+
 		}
 		
-		
-		/**
-		 * ダジャレのデータを取得開始
-		 * 
-		 */		
-		private function loadCsv():void
-		{
-			// ハードコードいくないね
-			_csvloader = new URLLoader( new URLRequest( './data/result2012.csv')  );
-			_csvloader.addEventListener( Event.COMPLETE, onCompleteLoadCsv );
-		}
-		
-		
-		
-		/**
-		 * ダジャレのデータを取得完了
-		 * @param e
-		 * 
-		 */		
-		private function onCompleteLoadCsv(e:Event):void
-		{
-			_csvloader.removeEventListener( Event.COMPLETE, onCompleteLoadCsv );
-			var list:Array = String(_csvloader.data).split("\n");
 			
-			objList = new Vector.<ItemNode>();
-			for(var i:int=0; i<list.length; i+=1){
-				var n:ItemNode = new ItemNode(list[i]);
-				objList.push( n );
-			}
-			
-			var settingLoader:URLLoader = new URLLoader();
-			settingLoader.addEventListener(IOErrorEvent.IO_ERROR, function(e:IOErrorEvent):void{
-				appStart();
-			});
-			
-			settingLoader.addEventListener( Event.COMPLETE, function(e:Event):void{
-				var settingXML:XML = XML(settingLoader.data);
-				
-				appStart(settingXML);
-			});
-			//	設定ファイル取得
-			settingLoader.load(  new URLRequest("./data/settings.xml") );
-		}
 		
 		
 		
 		private function creatingTextField():void
 		{
-			trace('creatingTextField : '+_fontname);
-			var format:TextFormat = new TextFormat( _fontname, 24, 0xffffff, true );
+			trace('creatingTextField : '+configModel.fontName);
+			var format:TextFormat = new TextFormat( configModel.fontName, 24, 0xffffff, true );
 			format.align = TextFormatAlign.CENTER;
 			format.leading = 5;
 			
@@ -208,7 +151,7 @@ package
 			
 			
 			// meta
-			var formatMeta:TextFormat = new TextFormat( _fontname, 18, 0xffffff, true );
+			var formatMeta:TextFormat = new TextFormat( configModel.fontName, 18, 0xffffff, true );
 			t_meta = new TextField();
 			t_meta.embedFonts = true;
 			t_meta.multiline = false;
@@ -282,10 +225,10 @@ package
 			}
 			
 			if(_random){
-				_currentTargetNumber = Math.random()*objList.length;
+				_currentTargetNumber = Math.random()*configModel.csvObjList.length;
 				
 			}else{
-				_currentTargetNumber = (_currentTargetNumber<objList.length-1)? _currentTargetNumber+1:0;
+				_currentTargetNumber = (_currentTargetNumber<configModel.csvObjList.length-1)? _currentTargetNumber+1:0;
 			}
 			
 			showJimaku(_currentTargetNumber);
@@ -300,10 +243,10 @@ package
 			
 			
 			if(_random){
-				_currentTargetNumber = Math.random()*objList.length;
+				_currentTargetNumber = Math.random()*configModel.csvObjList.length;
 				
 			}else{
-				_currentTargetNumber = (_currentTargetNumber<objList.length-1)? _currentTargetNumber+1:0;
+				_currentTargetNumber = (_currentTargetNumber<configModel.csvObjList.length-1)? _currentTargetNumber+1:0;
 			}
 			showJimaku( _currentTargetNumber );
 			dispatchEvent( new Event("JIMAKU_COUNT_UP"));
@@ -326,7 +269,7 @@ package
 			_viewAreaRectangle = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
 			
 			_currentTargetNumber = count;
-			var n:ItemNode = objList[_currentTargetNumber];	
+			var n:ItemNode = configModel.csvObjList[_currentTargetNumber];	
 			
 			var sw = _viewAreaRectangle.width * 0.9;
 			var sh = _viewAreaRectangle.height* 0.9;
