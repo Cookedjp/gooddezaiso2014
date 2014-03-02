@@ -318,6 +318,9 @@ package
 			t_meta.x = _viewAreaRectangle.x + 20;
 			t_meta.y = _viewAreaRectangle.y + _viewAreaRectangle.height - t_meta.textHeight - 20;
 			
+			
+			
+			dispatchEvent( new Event("UPDATE_JIMAKU") );
 		}
 		
 		
@@ -354,6 +357,8 @@ package
 			}else{
 				graphics.clear();			
 			}
+			dispatchEvent( new Event("UPDATE_JIMAKU") );
+
 		}
 		
 		public function changeInterval(v:Number):void
@@ -377,6 +382,7 @@ package
 				d_textfield.filters = null;
 				t_meta.filters = null;
 			}
+			dispatchEvent( new Event("UPDATE_JIMAKU") );
 		}
 		
 		private var _currentBlankTime:Number = 0;

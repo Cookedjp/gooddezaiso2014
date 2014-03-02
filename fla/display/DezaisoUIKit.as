@@ -7,6 +7,8 @@ package display
 	import com.bit101.components.PushButton;
 	import com.bit101.components.Slider;
 	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -42,62 +44,82 @@ package display
 		
 		//public var viewAreaRectangle:GDViewAreaRectangle;
 		
-		
+		private var renderView:RenderView;
+		private var uiView:Sprite;
 		
 		public function DezaisoUIKit(s:gooddezair3)
 		{
+			// viewのs
 			d_jimaku = s;
+			d_jimaku.x = -99999;
+
+			//
 			_stage = s.stage;
 			_stage.addEventListener( KeyboardEvent.KEY_DOWN, showPannel );
 			
-			buttonSave = new PushButton( this, 20, 30, "CLOSE", doClose );
+			// レンダリングされるカンバス
+			renderView = new RenderView(
+				d_jimaku, 
+				new Bitmap(new BitmapData(_stage.stage.width, _stage.stageHeight, true, 0x000033))
+			);
+			
+			_stage.addChild( renderView );
+			
+			uiView = new Sprite()
+			_stage.addChild( uiView );
+			
+			
+			
+			
+			buttonSave = new PushButton( uiView, 20, 30, "CLOSE", doClose );
 			buttonSave.width = 40;
-			autoPlayCheckBox = new CheckBox(this, 20, 60, "AUTO PLAY", onChangeAutoPlay );
+			autoPlayCheckBox = new CheckBox(uiView, 20, 60, "AUTO PLAY", onChangeAutoPlay );
 			autoPlayCheckBox.selected = true;
-			skipTargetTextInput = new InputText( this, 20, 80, "0" );
+			skipTargetTextInput = new InputText( uiView, 20, 80, "0" );
 			skipTargetTextInput.width = 160;
-			skipButton = new PushButton(this, 200, 80, "SKIP", onSkip );
+			skipButton = new PushButton(uiView, 200, 80, "SKIP", onSkip );
 			skipButton.width = 40;
 			colorPannel = new ColorChooser()
-			this.addChild( colorPannel );
+			uiView.addChild( colorPannel );
 			colorPannel.x = 300;
 			colorPannel.y = 100;
+			colorPannel.value = 0x000000;
 			colorPannel.addEventListener( Event.CHANGE, onChangeTransparent );
 			
-			transparentButton = new CheckBox(this, 300, 60, "Back Ground", onChangeTransparent);
+			transparentButton = new CheckBox(uiView, 300, 60, "Back Ground", onChangeTransparent);
 			transparentButton.selected = true;			
-			transparentSlider = new Slider( "horizontal", this, 300, 80, onChangeTransparent );
+			transparentSlider = new Slider( "horizontal", uiView, 300, 80, onChangeTransparent );
 			transparentSlider.minimum = 0;
 			transparentSlider.maximum = 1;
 			transparentSlider.value = 1;
 			onChangeTransparent(null);
 			
-			textShadowCheckBox = new CheckBox(this, 420, 60, "Text Shadow", onChangeTextColor );
+			textShadowCheckBox = new CheckBox(uiView, 420, 60, "Text Shadow", onChangeTextColor );
 			textShadowCheckBox.selected = true;
-			textColorWhite = new CheckBox(this, 420, 80, "Text Color White", onChangeTextColor );
+			textColorWhite = new CheckBox(uiView, 420, 80, "Text Color White", onChangeTextColor );
 			textColorWhite.selected = true;
 			onChangeTextColor(null);
 			
-			intervalSlider = new Slider( "horizontal", this, 600, 80, onChangeInterval );
+			intervalSlider = new Slider( "horizontal", uiView, 600, 80, onChangeInterval );
 			intervalSlider.minimum = 1000/30;
 			intervalSlider.maximum = 15000;
 			intervalSlider.value = intervalSlider.maximum;
 			intervalSlider.width = 300;
-			intervalLabel = new InputText( this, 600, 60, intervalSlider.value.toString(), onChangeIntervalText);
+			intervalLabel = new InputText( uiView, 600, 60, intervalSlider.value.toString(), onChangeIntervalText);
 			var ti:Label = new Label( this, 600, 40, "Interval");
 			
 			onChangeInterval(null);
 			
-			blankInterbal = new InputText( this, 750, 60, "0");
-			blankInterbalPush = new PushButton( this, 860, 57, "blank", onUpdateBlankInterval);
+			blankInterbal = new InputText( uiView, 750, 60, "0");
+			blankInterbalPush = new PushButton( uiView, 860, 57, "blank", onUpdateBlankInterval);
 			blankInterbalPush.width = 40;
-			var tbi:Label = new Label( this, 750, 40, "Blank Interval");
+			var tbi:Label = new Label( uiView, 750, 40, "Blank Interval");
 			
 			
-			var t:com.bit101.components.Label = new Label( this, 20, 100, "※Press “SPACE” / show this pannel.");
+			var t:com.bit101.components.Label = new Label( uiView, 20, 100, "※Press “SPACE” / show this pannel.");
 			d_jimaku.addEventListener("JIMAKU_COUNT_UP", onCountUp );
 			
-			randomText = new CheckBox(this, 100, 60, "RANDOM", doRandom );
+			randomText = new CheckBox(uiView, 100, 60, "RANDOM", doRandom );
 		}
 		
 		private function onCountUp(e:Event):void
