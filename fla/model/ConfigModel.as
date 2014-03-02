@@ -61,7 +61,7 @@ package model
 			parallelLoader.addThread( new LoaderThread( new URLRequest("data/fonts/font2.swf") ) );
 			
 			// loader for だじゃれ			
-			parallelLoader.addThread( new URLLoaderThread( new URLRequest( './data/result2012.csv')  ) );
+			parallelLoader.addThread( new URLLoaderThread( new URLRequest( './data/result2013.csv')  ) );
 			
 			// settings 			
 			parallelLoader.addThread( new URLLoaderThread( new URLRequest("./data/settings.xml")  ) );
