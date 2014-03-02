@@ -106,7 +106,7 @@ package display
 			intervalSlider.value = intervalSlider.maximum;
 			intervalSlider.width = 300;
 			intervalLabel = new InputText( uiView, 600, 60, intervalSlider.value.toString(), onChangeIntervalText);
-			var ti:Label = new Label( this, 600, 40, "Interval");
+			var ti:Label = new Label( uiView, 600, 40, "Interval");
 			
 			onChangeInterval(null);
 			
@@ -201,7 +201,7 @@ package display
 		
 		public function doClose(e:Event):void
 		{
-			this.visible = false;　
+			uiView.visible = false;　
 			Mouse.hide();
 		}
 		

@@ -5,6 +5,7 @@ package display
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.ui.Keyboard;
 	
@@ -15,9 +16,18 @@ package display
 		
 		
 		private var divideLevel:int = 1;
-		private var shiftX:Number = 100;
+		private var shiftX:Number = 0;
 		
 		private var mode:int = 0;
+
+
+		private function resetAll():void{
+			mode = 0;
+			shiftX = 0;
+			divideLevel = 1;
+			colorModeWhite = false;
+			capture();
+		}
 		
 		
 		public function RenderView(src:Sprite, cnvs:Bitmap)
@@ -27,7 +37,6 @@ package display
 			// 字幕が更新されると呼ばれる
 			source.addEventListener( "UPDATE_JIMAKU", onUpdateJimaku );
 			canvas = cnvs;
-//			addChild( canvas );
 			addEventListener( Event.ADDED_TO_STAGE, onStageDetected );
 		}
 		
@@ -41,13 +50,18 @@ package display
 		
 		private function onKeyChange(e:KeyboardEvent):void
 		{
+			if(e.keyCode == Keyboard.NUMBER_0){
+				resetAll();
+				return;
+			}
+			
 			if(!e.shiftKey) return;
 			mode += 1;
 			
-			if(mode==2){
-				mode = 0
+			if(mode==3){
+				mode = 0;
 			}
-				capture();
+			capture();
 		}
 		private function onMouseWheel(e:MouseEvent):void
 		{
@@ -63,9 +77,18 @@ package display
 			if(mode==1){
 				updateShiftX(e.delta);
 			}
+			if(mode==2){
+				colorToggle(e.delta);
+			}
 		}
 		
 		
+		private var colorModeWhite:Boolean = false;
+		private function colorToggle(delta:Number):void{
+			colorModeWhite = !colorModeWhite;
+			capture();
+		}
+
 		
 		private function updateDivide(delta:Number):void{
 			var newVal:int = divideLevel;
@@ -87,11 +110,6 @@ package display
 		
 		private function updateShiftX(delta:Number):void{
 			shiftX += delta*10;
-			if(shiftX>canvas.width){
-				shiftX = canvas.width
-			}else if(shiftX<-canvas.width){
-				shiftX = -canvas.width
-			}
 			capture();
 		}
 		
@@ -106,18 +124,30 @@ package display
 		
 		private function capture():void
 		{
+			var colorTransform:ColorTransform = new ColorTransform();
+			if(colorModeWhite){
+				colorTransform = new ColorTransform(-1, -1, -1, 1, 255, 255, 255, 0);
+			}
 			
 			canvas.bitmapData.lock();
-			canvas.bitmapData.draw( source );
+			canvas.bitmapData.draw( source, null, colorTransform );
 			canvas.bitmapData.unlock();
 
 			
 			
-			var matShiftX:Matrix = new Matrix();
-			matShiftX.translate( shiftX, 0);
 			var matrix:Matrix = new Matrix()
 			matrix.scale( 1/divideLevel, 1/divideLevel);
+
+			
+			var rangewidth:Number = canvas.width/divideLevel;
+				
+				
+			var matShiftX:Matrix = new Matrix();
+			matShiftX.translate( shiftX % rangewidth, 0);
 			matrix.concat(matShiftX);
+			
+			
+			
 			graphics.clear();
 			graphics.beginBitmapFill( canvas.bitmapData, matrix, true);
 			graphics.drawRect( 0, 0, canvas.width, canvas.height);
