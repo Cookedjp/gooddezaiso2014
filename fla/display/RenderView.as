@@ -2,13 +2,26 @@ package display
 {
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
+	import flash.display.StageDisplayState;
+	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.ui.Keyboard;
-	
+	import flash.utils.flash_proxy;
+	/**
+	 * 
+	 * @author hgw
+	 *
+	 * 0: reset
+	 * F: Fullscreen
+	 * shift: mode change 
+	 * 	- mode 1: divide screen
+	 * 	- mode 2: shift content
+	 * 	- mode 3: toggle color mode
+	 */	
 	public class RenderView extends Sprite
 	{
 		private var source:Sprite;
@@ -52,6 +65,10 @@ package display
 		{
 			if(e.keyCode == Keyboard.NUMBER_0){
 				resetAll();
+				return;
+			}
+			if(e.keyCode == Keyboard.F){
+				stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
 				return;
 			}
 			
