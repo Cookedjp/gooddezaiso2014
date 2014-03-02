@@ -151,7 +151,8 @@ package
 			
 			
 			// meta
-			var formatMeta:TextFormat = new TextFormat( configModel.fontName, 18, 0xffffff, true );
+			var formatMeta:TextFormat = new TextFormat( configModel.fontName, 36, 0xffffff, true );
+			formatMeta.align = TextFormatAlign.CENTER;
 			t_meta = new TextField();
 			t_meta.embedFonts = true;
 			t_meta.multiline = false;
@@ -312,12 +313,13 @@ package
 			
 			var awardName:String = n.level;
 			if(awardName){
-				awardName += "\n";
+				awardName += " ";
 			}
-			t_meta.text = awardName + n.id+"（"+relativeDay+"日"+relativeDayHour+"時間"+relativeDayHourMin+"分前に投稿） ";
-			t_meta.x = _viewAreaRectangle.x + 20;
-			t_meta.y = _viewAreaRectangle.y + _viewAreaRectangle.height - t_meta.textHeight - 20;
-			
+			t_meta.text = awardName +"#グッドデザイソ "+ n.id+"（"+relativeDay+"日"+relativeDayHour+"時間"+relativeDayHourMin+"分前に投稿） ";
+//			t_meta.x = _viewAreaRectangle.x + 20;
+//			t_meta.y = _viewAreaRectangle.y + _viewAreaRectangle.height - t_meta.textHeight - 20;
+			t_meta.x =int((stage.stageWidth-t_meta.width)/2);
+			t_meta.y = stage.stageHeight-(t_meta.height);
 			
 			
 			dispatchEvent( new Event("UPDATE_JIMAKU") );

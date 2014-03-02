@@ -132,7 +132,7 @@ package display
 		{
 			trace(e.keyCode+"   "+Keyboard.SPACE)
 			if(e.keyCode === Keyboard.SPACE){
-				this.visible = true;
+				uiView.visible = true;
 				Mouse.show();
 			}
 		}
