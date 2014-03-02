@@ -27,7 +27,7 @@ package display
 		public var transparentSlider:Slider;
 		
 		private var _stage:Stage;
-		private var d_jimaku:gooddezair3;
+//		private var d_jimaku:gooddezair3;
 		
 		public var intervalSlider:Slider;
 		private var intervalLabel:InputText;
@@ -43,11 +43,14 @@ package display
 		//public var viewAreaRectangle:GDViewAreaRectangle;
 		
 		
+		private var d_jimaku:JimakuCanvas;
 		
-		public function DezaisoUIKit(s:gooddezair3)
+		
+		
+		public function DezaisoUIKit(s:Stage, config)
 		{
-			d_jimaku = s;
-			_stage = s.stage;
+			d_jimaku = new JimakuCanvas(config);
+			_stage = s;
 			_stage.addEventListener( KeyboardEvent.KEY_DOWN, showPannel );
 			
 			buttonSave = new PushButton( this, 20, 30, "CLOSE", doClose );

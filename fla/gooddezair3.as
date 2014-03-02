@@ -40,8 +40,6 @@ package
 		private var d_wrapper: Sprite;
 		private var _currentTargetNumber: int = 0;
 		
-		
-		
 		public function get currentTargetNumber():int
 		{
 			return _currentTargetNumber;
@@ -121,7 +119,9 @@ package
 			trace("COMPLETE LOADING")
 			creatingTextField();
 			
+			
 			appStart(configModel.settingXML);
+			return ;
 
 		}
 		
@@ -178,12 +178,15 @@ package
 		 */		
 		private function appStart(settings:XML=null):void{
 			
+			ui = new DezaisoUIKit(stage, configModel);
 			APP_SETTINGS = settings;
 			_slideTimer = new Timer(15000);
 			_slideTimer.start();
 			_slideTimer.addEventListener( TimerEvent.TIMER, showTextAsTimerEvent );
 			
-			ui = new DezaisoUIKit(this);
+			
+			return;
+			
 			showJimaku(0);
 			addChild( ui );
 			if(settings){
@@ -344,40 +347,24 @@ package
 			}
 		}
 		
-		public function bgTranspartent(t:Boolean, v:Number, c:uint):void
-		{
-			if(t){
-				graphics.clear();
-				graphics.beginFill(c, v);
-				graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
-				graphics.endFill();
-			}else{
-				graphics.clear();			
-			}
-		}
-		
+//		public function bgTranspartent(t:Boolean, v:Number, c:uint):void
+//		{
+//			if(t){
+//				graphics.clear();
+//				graphics.beginFill(c, v);
+//				graphics.drawRect(0, 0, stage.stageWidth, stage.stageHeight);
+//				graphics.endFill();
+//			}else{
+//				graphics.clear();			
+//			}
+//		}
+//		
 		public function changeInterval(v:Number):void
 		{
 			var current = _slideTimer.currentCount;
 			_slideTimer.delay = v;
 		}
 		
-		public function textShadow(c:uint, b:Boolean){
-			
-			d_textfield.textColor = c;
-			t_meta.textColor = c;
-			
-			var shadowCol:uint = (c===0x0)? 0xffffff:0x0;
-			
-			if(b){
-				var f:Array =  [new DropShadowFilter(0, 0, shadowCol, 0.75, 8, 8)];
-				d_textfield.filters = f;
-				t_meta.filters = f;
-			}else{
-				d_textfield.filters = null;
-				t_meta.filters = null;
-			}
-		}
 		
 		private var _currentBlankTime:Number = 0;
 		
