@@ -58,7 +58,7 @@ package model
 		override protected function run():void 
 		{
 			// loader for fonts
-			parallelLoader.addThread( new LoaderThread( new URLRequest("data/fonts/font2.swf") ) );
+			parallelLoader.addThread( new LoaderThread( new URLRequest("data/fonts/Ryobi.swf") ) );
 			
 			// loader for だじゃれ			
 			parallelLoader.addThread( new URLLoaderThread( new URLRequest( './data/result2013.csv')  ) );
@@ -81,7 +81,7 @@ package model
 			
 			// font を登録
 			var fontLoader:LoaderThread = parallelLoader.getThreadAt(0) as LoaderThread
-			var FontClass:Class = fontLoader.loader.contentLoaderInfo.applicationDomain.getDefinition("Hiragino") as Class;
+			var FontClass:Class = fontLoader.loader.contentLoaderInfo.applicationDomain.getDefinition("Ryobi") as Class;
 			Font.registerFont( FontClass );
 			
 			var font:Font = new FontClass();
