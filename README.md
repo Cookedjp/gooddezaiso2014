@@ -1,9 +1,9 @@
-# Ryoji #IGETA 3.0
+# #RYOBIIGETA 3.0 (#リョービイゲタ)
 
 ## [グッドデザイソエキシビジョン2014](http://good.dezaiso.jp/)用VJアプリ
 
 
-## download
+## ダウソロード
 
 coming soon...
 
