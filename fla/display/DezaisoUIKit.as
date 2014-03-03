@@ -55,7 +55,7 @@ package display
 
 			//
 			_stage = s.stage;
-			_stage.addEventListener( KeyboardEvent.KEY_DOWN, showPannel );
+			_stage.addEventListener( KeyboardEvent.KEY_DOWN, checkKeyEvent );
 			
 			// レンダリングされるカンバス
 			renderView = new RenderView(
@@ -128,12 +128,37 @@ package display
 		}
 		
 		
-		private function showPannel(e:KeyboardEvent):void
+		private function checkKeyEvent(e:KeyboardEvent):void
 		{
-			trace(e.keyCode+"   "+Keyboard.SPACE)
 			if(e.keyCode === Keyboard.SPACE){
 				uiView.visible = true;
 				Mouse.show();
+			}
+			
+			if(e.keyCode==Keyboard.J){
+				if(e.commandKey){
+					transparentSlider.value -= 0.1;
+					transparentSlider.dispatchEvent( new Event(Event.CHANGE) );
+				}else{
+					d_jimaku.next();
+				}
+			}else if(e.keyCode==Keyboard.K){
+				if(e.commandKey){
+					transparentSlider.value += 0.1;
+					transparentSlider.dispatchEvent( new Event(Event.CHANGE) );
+				}else{
+					d_jimaku.prev();
+				}
+			}
+			
+			if(e.keyCode==Keyboard.T){
+				textShadowCheckBox.selected = !textShadowCheckBox.selected;
+				onChangeTextColor(null);
+			}
+			
+			if(e.keyCode==Keyboard.NUMBER_0){
+				transparentSlider.value = 1;
+				transparentSlider.dispatchEvent( new Event(Event.CHANGE) );
 			}
 		}
 		

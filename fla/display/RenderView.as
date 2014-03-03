@@ -7,10 +7,13 @@ package display
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.ui.Keyboard;
+	import flash.utils.Timer;
 	import flash.utils.flash_proxy;
+
 	/**
 	 * 
 	 * @author hgw
@@ -26,19 +29,24 @@ package display
 	{
 		private var source:Sprite;
 		private var canvas:Bitmap;
-		
+
+		private var shiftTimer:Timer;
 		
 		private var divideLevel:int = 1;
-		private var shiftX:Number = 0;
 		
-		private var mode:int = 0;
 
 
 		private function resetAll():void{
-			mode = 0;
 			shiftX = 0;
 			divideLevel = 1;
 			colorModeWhite = false;
+			
+
+			shiftTimer.removeEventListener(TimerEvent.TIMER, onUpdateShiftVector)
+			shiftX = 0;
+			shiftY = 0;
+			vectorX = 0;
+			vectorY = 0;
 			capture();
 		}
 		
@@ -51,6 +59,9 @@ package display
 			source.addEventListener( "UPDATE_JIMAKU", onUpdateJimaku );
 			canvas = cnvs;
 			addEventListener( Event.ADDED_TO_STAGE, onStageDetected );
+			
+			shiftTimer = new Timer( 1000/24 );
+			shiftTimer.start();
 		}
 		
 		private function onStageDetected(e:Event):void
@@ -61,8 +72,33 @@ package display
 		}
 		
 		
+		/**
+		 * 
+		 * @param e
+		 * 
+		 */		
 		private function onKeyChange(e:KeyboardEvent):void
 		{
+			
+			// 反転コマンドを判別
+			if(e.keyCode==Keyboard.I && e.commandKey){
+				colorToggle(0);
+			}
+			
+			// xyシフトの速度
+			var shiftVal = (e.shiftKey)? 10:1;
+			if(e.keyCode==Keyboard.RIGHT){
+				
+				updateShiftX( 1*shiftVal );
+			}else if(e.keyCode==Keyboard.LEFT){
+				updateShiftX( -1*shiftVal );
+			}else if(e.keyCode==Keyboard.UP){
+				updateShiftY( -1*shiftVal );
+			}else if(e.keyCode==Keyboard.DOWN){
+				updateShiftY( 1*shiftVal );
+			}
+			
+			
 			if(e.keyCode == Keyboard.NUMBER_0){
 				resetAll();
 				return;
@@ -73,13 +109,14 @@ package display
 			}
 			
 			if(!e.shiftKey) return;
-			mode += 1;
-			
-			if(mode==3){
-				mode = 0;
-			}
 			capture();
 		}
+		
+		/**
+		 * 
+		 * @param e
+		 * 
+		 */		
 		private function onMouseWheel(e:MouseEvent):void
 		{
 			trace("updatePosition")
@@ -88,15 +125,7 @@ package display
 				return;
 			}
 
-			if(mode==0){
-				updateDivide(e.delta);
-			}
-			if(mode==1){
-				updateShiftX(e.delta);
-			}
-			if(mode==2){
-				colorToggle(e.delta);
-			}
+			updateDivide(e.delta);
 		}
 		
 		
@@ -124,13 +153,58 @@ package display
 
 		}
 		
-		
-		private function updateShiftX(delta:Number):void{
-			shiftX += delta*10;
-			capture();
+		// --------------------------------------------------
+		//
+		//
+		// SHIFT X, SHIFT Y
+		//
+		//
+		// --------------------------------------------------
+		/**
+		 * SHIFT X
+		 * @param delta
+		 * 
+		 */
+		private var vectorX:Number = 0;
+		private var shiftX:Number = 0;
+		private function updateShiftX(value:Number):void{
+			vectorX += value;
+			shiftTimer.removeEventListener(TimerEvent.TIMER, onUpdateShiftVector)
+			shiftTimer.addEventListener(TimerEvent.TIMER, onUpdateShiftVector)
+		}
+
+		/**
+		 * SHIFT Y
+		 * @param delta
+		 * 
+		 */		
+		private var vectorY:Number = 0;
+		private var shiftY:Number = 0;
+		private function updateShiftY(value:Number):void{
+			vectorY += value;
+			shiftTimer.removeEventListener(TimerEvent.TIMER, onUpdateShiftVector)
+			shiftTimer.addEventListener(TimerEvent.TIMER, onUpdateShiftVector)
 		}
 		
+		private function onUpdateShiftVector(e:Event):void{
+			shiftY += vectorY;
+			shiftX += vectorX;
+			capture()
+		}
 		
+
+		
+		
+		
+		
+		
+		// --------------------------------------------------
+		//
+		//
+		//
+		//
+		//
+		// --------------------------------------------------
 		private function onUpdateJimaku(e:Event):void
 		{
 			trace("字幕が更新されました")
@@ -157,11 +231,12 @@ package display
 
 			
 			var rangewidth:Number = canvas.width/divideLevel;
+			var rangeheight:Number = canvas.height/divideLevel;
 				
 				
-			var matShiftX:Matrix = new Matrix();
-			matShiftX.translate( shiftX % rangewidth, 0);
-			matrix.concat(matShiftX);
+			var matShift:Matrix = new Matrix();
+			matShift.translate( shiftX % rangewidth, shiftY % rangeheight);
+			matrix.concat(matShift);
 			
 			
 			

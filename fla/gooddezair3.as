@@ -256,6 +256,26 @@ package
 			_slideTimer.start();
 		}
 		
+		public function next():void{
+			_currentTargetNumber += 1;
+			if(_currentTargetNumber>configModel.csvObjList.length-1){
+				_currentTargetNumber = 0;
+			}
+			
+			showJimaku( _currentTargetNumber );
+			dispatchEvent( new Event("JIMAKU_COUNT_UP"));
+		}
+		
+		public function prev():void{
+			_currentTargetNumber -= 1;
+			if(_currentTargetNumber<0){
+				_currentTargetNumber = configModel.csvObjList.length-1;
+			}
+			
+			showJimaku( _currentTargetNumber );
+			dispatchEvent( new Event("JIMAKU_COUNT_UP"));
+		}
+		
 		
 		private function convSentence(theStc, oldKey, convKey) {
 			var sentence_array:Array = new Array();
