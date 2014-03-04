@@ -11,6 +11,7 @@ package display
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.display.Stage;
+	import flash.display.StageDisplayState;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
@@ -136,30 +137,27 @@ package display
 			}
 			
 			if(e.keyCode==Keyboard.J){
-				if(e.commandKey){
-					transparentSlider.value -= 0.1;
-					transparentSlider.dispatchEvent( new Event(Event.CHANGE) );
-				}else{
-					d_jimaku.next();
-				}
+				d_jimaku.next();
 			}else if(e.keyCode==Keyboard.K){
-				if(e.commandKey){
-					transparentSlider.value += 0.1;
-					transparentSlider.dispatchEvent( new Event(Event.CHANGE) );
-				}else{
-					d_jimaku.prev();
+				d_jimaku.prev();
+			}else if(e.keyCode==Keyboard.D){
+				transparentSlider.value -= 0.1;
+				transparentSlider.dispatchEvent( new Event(Event.CHANGE) );
+			}else if(e.keyCode==Keyboard.F){
+				if(e.keyCode==Keyboard.COMMAND){
+					stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+					return;
 				}
-			}
-			
-			if(e.keyCode==Keyboard.T){
+				transparentSlider.value += 0.1;
+				transparentSlider.dispatchEvent( new Event(Event.CHANGE) );
+			}else if(e.keyCode==Keyboard.T){
 				textShadowCheckBox.selected = !textShadowCheckBox.selected;
 				onChangeTextColor(null);
-			}
-			
-			if(e.keyCode==Keyboard.NUMBER_0){
+			}else if(e.keyCode==Keyboard.NUMBER_0){
 				transparentSlider.value = 1;
 				transparentSlider.dispatchEvent( new Event(Event.CHANGE) );
 			}
+
 		}
 		
 		

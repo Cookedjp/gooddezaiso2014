@@ -81,7 +81,7 @@ package display
 		{
 			
 			// 反転コマンドを判別
-			if(e.keyCode==Keyboard.I && e.commandKey){
+			if(e.keyCode==Keyboard.I){
 				colorToggle(0);
 			}
 			
@@ -103,12 +103,7 @@ package display
 				resetAll();
 				return;
 			}
-			if(e.keyCode == Keyboard.F){
-				stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
-				return;
-			}
 			
-			if(!e.shiftKey) return;
 			capture();
 		}
 		
