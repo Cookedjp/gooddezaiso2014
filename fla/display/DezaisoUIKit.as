@@ -144,7 +144,7 @@ package display
 				transparentSlider.value -= 0.1;
 				transparentSlider.dispatchEvent( new Event(Event.CHANGE) );
 			}else if(e.keyCode==Keyboard.F){
-				if(e.keyCode==Keyboard.COMMAND){
+				if(e.commandKey){
 					stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
 					return;
 				}
@@ -157,7 +157,6 @@ package display
 				transparentSlider.value = 1;
 				transparentSlider.dispatchEvent( new Event(Event.CHANGE) );
 			}
-
 		}
 		
 		
