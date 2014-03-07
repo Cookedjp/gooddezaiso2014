@@ -5,6 +5,7 @@ package
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageDisplayState;
+	import flash.display.StageQuality;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -108,6 +109,9 @@ package
 			configModel = new ConfigModel();
 			configModel.start();
 			configModel.dispacher.addEventListener(Event.COMPLETE, startContent);
+			stage.quality = StageQuality.MEDIUM;
+			stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+
 		}
 		
 		var configModel:ConfigModel;
