@@ -175,7 +175,9 @@ package
 			addChild( d_captionWrapper );
 			d_captionWrapper.addChild( t_meta );
 			
-			
+			graphics.beginFill(0x0,0);
+			graphics.drawRect( 0, 0, stage.stageWidth, stage.stageHeight);
+			graphics.endFill();
 			
 		}
 		
@@ -353,7 +355,7 @@ package
 //			t_meta.y = _viewAreaRectangle.y + _viewAreaRectangle.height - t_meta.textHeight - 20;
 //			t_meta.x =int((stage.stageWidth-t_meta.width)/2);
 //			t_meta.y = stage.stageHeight-(t_meta.height);
-			
+			trace(t_meta.textWidth)
 			t_meta.width = t_meta.textWidth+10
 			if(t_meta.width > sw){
 				var ratio:Number = sw / t_meta.width;
@@ -361,6 +363,7 @@ package
 			}else{
 				d_captionWrapper.scaleX = d_captionWrapper.scaleY = 1;
 			}
+			d_captionWrapper.x =int((stage.stageWidth-d_captionWrapper.width)/2);
 			d_captionWrapper.y = stage.stageHeight-75;
 
 			
