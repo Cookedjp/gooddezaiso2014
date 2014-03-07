@@ -112,6 +112,8 @@ package
 			stage.quality = StageQuality.MEDIUM;
 			stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
 
+			
+			
 		}
 		
 		var configModel:ConfigModel;
@@ -129,7 +131,7 @@ package
 
 		}
 		
-			
+		private var d_captionWrapper:Sprite;
 		
 		
 		
@@ -160,14 +162,21 @@ package
 			t_meta = new TextField();
 			t_meta.embedFonts = true;
 			t_meta.multiline = false;
-			t_meta.width = stage.stageWidth;
+//			t_meta.width = stage.stageWidth;
+			t_meta.width = DUMMY_MAX_WIDTH;
 			t_meta.wordWrap = false;
 			t_meta.defaultTextFormat = formatMeta;
-			addChild( t_meta );
-			t_meta.x = 0;
-			t_meta.y = stage.stageHeight-75;
+//			t_meta.x = 0;
+//			t_meta.y = stage.stageHeight-75;
 			t_meta.selectable = false;
 			t_meta.filters = [new DropShadowFilter(0, 0, 0x0, 0.75, 8, 8)];
+			
+			d_captionWrapper = new Sprite()
+			addChild( d_captionWrapper );
+			d_captionWrapper.addChild( t_meta );
+			
+			
+			
 		}
 		
 		
@@ -342,9 +351,18 @@ package
 			t_meta.text = awardName +"#グッドデザイソ "+ n.id+"（"+relativeDay+"日"+relativeDayHour+"時間"+relativeDayHourMin+"分前に投稿） ";
 //			t_meta.x = _viewAreaRectangle.x + 20;
 //			t_meta.y = _viewAreaRectangle.y + _viewAreaRectangle.height - t_meta.textHeight - 20;
-			t_meta.x =int((stage.stageWidth-t_meta.width)/2);
-			t_meta.y = stage.stageHeight-(t_meta.height);
+//			t_meta.x =int((stage.stageWidth-t_meta.width)/2);
+//			t_meta.y = stage.stageHeight-(t_meta.height);
 			
+			t_meta.width = t_meta.textWidth+10
+			if(t_meta.width > sw){
+				var ratio:Number = sw / t_meta.width;
+				d_captionWrapper.scaleX = d_captionWrapper.scaleY = ratio;
+			}else{
+				d_captionWrapper.scaleX = d_captionWrapper.scaleY = 1;
+			}
+			d_captionWrapper.y = stage.stageHeight-75;
+
 			
 			dispatchEvent( new Event("UPDATE_JIMAKU") );
 		}
