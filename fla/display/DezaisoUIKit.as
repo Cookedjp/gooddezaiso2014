@@ -121,6 +121,8 @@ package display
 			d_jimaku.addEventListener("JIMAKU_COUNT_UP", onCountUp );
 			
 			randomText = new CheckBox(uiView, 100, 60, "RANDOM", doRandom );
+			
+			doClose(null);
 		}
 		
 		private function onCountUp(e:Event):void
