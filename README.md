@@ -5,7 +5,7 @@
 
 ## ダウソロード
 
-coming soon...
+https://www.dropbox.com/s/t0gpv4ntfwdi4h3/RyobiIGETA.air?dl=0
 
 
 ## 操作方法
