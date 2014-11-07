@@ -6,7 +6,7 @@
 
 ## ダウソロード
 
-https://www.dropbox.com/s/t0gpv4ntfwdi4h3/RyobiIGETA.air?dl=0
+https://github.com/Cookedjp/gooddezaiso2014/raw/master/fla/RyobiIGETA.air
 
 
 ## 操作方法
